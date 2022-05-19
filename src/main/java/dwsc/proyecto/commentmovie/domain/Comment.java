@@ -1,5 +1,8 @@
 package dwsc.proyecto.commentmovie.domain;
 
+import java.util.Date;
+
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,7 +13,9 @@ public class Comment {
 	private String id;
 	private String author;
 	private String text;
-	private int averageScore;
+	private int score;
+	@CreatedDate
+	private Date createdAt;
 	@DBRef
 	private Movie movie;
 
@@ -39,11 +44,11 @@ public class Comment {
 	}
 
 	public int getAverageScore() {
-		return averageScore;
+		return score;
 	}
 
 	public void setAverageScore(int averageScore) {
-		this.averageScore = averageScore;
+		this.score = averageScore;
 	}
 
 	public Movie getMovie() {
@@ -52,6 +57,22 @@ public class Comment {
 
 	public void setMovie(Movie movie) {
 		this.movie = movie;
+	}
+	
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
 	}
 
 }
