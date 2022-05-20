@@ -13,7 +13,11 @@ public class MovieServiceImpl implements MovieService {
 	@Autowired
 	MovieRepository movieRepo;
 
-	public void updateScore(String id, int score) {
+	public Optional<Movie> findMovieById(String movieId) {
+		return movieRepo.findById(movieId);
+	}
+
+	public void updateScore(String id, double score) {
 		Optional<Movie> movieOptional = movieRepo.findById(id);
 
 		Movie movie = movieOptional.get();

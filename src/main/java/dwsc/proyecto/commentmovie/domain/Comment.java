@@ -13,7 +13,7 @@ public class Comment {
 	private String id;
 	private String author;
 	private String text;
-	private int score;
+	private double score;
 	@CreatedDate
 	private Date createdAt;
 	@DBRef
@@ -43,7 +43,7 @@ public class Comment {
 		this.text = text;
 	}
 
-	public int getAverageScore() {
+	public double getAverageScore() {
 		return score;
 	}
 
@@ -59,7 +59,7 @@ public class Comment {
 		this.movie = movie;
 	}
 	
-	public int getScore() {
+	public double getScore() {
 		return score;
 	}
 
