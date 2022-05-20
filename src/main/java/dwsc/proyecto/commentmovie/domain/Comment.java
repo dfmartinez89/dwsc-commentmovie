@@ -7,16 +7,21 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.mongodb.lang.NonNull;
+
 @Document
 public class Comment {
 	@Id
 	private String id;
+	@NonNull
 	private String author;
+	@NonNull
 	private String text;
+	@NonNull
 	private double score;
 	@CreatedDate
 	private Date createdAt;
-	@DBRef
+	@DBRef // tune workaround https://spring.io/blog/2021/11/29/spring-data-mongodb-relation-modelling
 	private Movie movie;
 
 	public String getId() {
