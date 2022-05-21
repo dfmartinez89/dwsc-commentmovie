@@ -51,7 +51,7 @@ public class CommentController {
 	}
 
 	@Operation(summary = "insert a new comment related to a given movie", description = "Operation to create a comment")
-	@ApiResponses({ @ApiResponse(responseCode = "200", description = "comment created succesfully"),
+	@ApiResponses({ @ApiResponse(responseCode = "201", description = "comment created succesfully"),
 			@ApiResponse(responseCode = "404", description = "movie not found", content = @Content(schema = @Schema(implementation = CustomResponse.class))) })
 	@RequestMapping(method = RequestMethod.POST, path = "/comment/{movieId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Comment> saveComment(@Parameter(description = "Movie id") @PathVariable String movieId,
@@ -69,7 +69,7 @@ public class CommentController {
 		double score = movieService.getScoreAverageByMovie(movieId);
 		movieService.updateScore(movieId, score);
 
-		return ResponseEntity.ok(comment);
+		return new ResponseEntity<Comment>(comment, HttpStatus.CREATED);
 
 	}
 }
