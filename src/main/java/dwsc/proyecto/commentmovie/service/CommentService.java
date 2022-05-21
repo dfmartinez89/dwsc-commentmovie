@@ -8,7 +8,5 @@ import dwsc.proyecto.commentmovie.domain.Comment;
 public interface CommentService {
 	public Iterable<Comment> getAllByMovieId(String movieId);
 
-	public double getScoreAverageByMovie(String movieId);
-	
-	public void saveComment (Comment comment);
+	public void saveComment(Comment comment);
 }

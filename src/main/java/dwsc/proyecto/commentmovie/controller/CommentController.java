@@ -2,7 +2,6 @@ package dwsc.proyecto.commentmovie.controller;
 
 import java.util.Optional;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -42,34 +41,33 @@ public class CommentController {
 			@ApiResponse(responseCode = "404", description = "comment not found", content = @Content(schema = @Schema(implementation = CustomResponse.class))) })
 	@RequestMapping(method = RequestMethod.GET, path = "/comment/{movieId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Iterable<Comment>> getAllCommentsByMovieId(
-			@Parameter(description = "Movie id") @PathVariable ObjectId movieId) {
-		String movieIdString = movieId.toString();
-		Optional<Movie> movie = movieService.findMovieById(movieIdString);
+			@Parameter(description = "Movie id") @PathVariable String movieId) throws MovieNotFoundException {
+		Optional<Movie> movie = movieService.findMovieById(movieId);
 		if (!movie.isPresent()) {
-			throw new MovieNotFoundException(HttpStatus.NOT_FOUND, "The movie with id" + movieId + " does not exists");
+			throw new MovieNotFoundException(HttpStatus.NOT_FOUND, "The movie with id: " + movieId + " does not exists");
 		}
 
-		return ResponseEntity.ok(commentService.getAllByMovieId(movieIdString));
+		return ResponseEntity.ok(commentService.getAllByMovieId(movieId));
 	}
 
 	@Operation(summary = "insert a new comment related to a given movie", description = "Operation to create a comment")
-	@ApiResponses({ @ApiResponse(responseCode = "201", description = "comments created succesfully"),
+	@ApiResponses({ @ApiResponse(responseCode = "200", description = "comment created succesfully"),
 			@ApiResponse(responseCode = "404", description = "movie not found", content = @Content(schema = @Schema(implementation = CustomResponse.class))) })
 	@RequestMapping(method = RequestMethod.POST, path = "/comment/{movieId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Comment> saveComment(@Parameter(description = "Movie id")@PathVariable ObjectId movieId, @Parameter(description = "Comment details")@RequestBody Comment comment) {
-		String movieIdString = movieId.toString();
-		Optional<Movie> movie = movieService.findMovieById(movieIdString);
+	public ResponseEntity<Comment> saveComment(@Parameter(description = "Movie id") @PathVariable String movieId,
+			@Parameter(description = "Comment details") @RequestBody Comment comment) throws MovieNotFoundException {
+		Optional<Movie> movie = movieService.findMovieById(movieId);
 
 		if (!movie.isPresent()) {
-			throw new MovieNotFoundException(HttpStatus.NOT_FOUND, "The movie with id " + movieId + " does not exists");
+			throw new MovieNotFoundException(HttpStatus.NOT_FOUND, "The movie with id: " + movieId + " does not exists");
 		}
 
 		comment.setMovie(movie.get());
 
 		commentService.saveComment(comment);
 
-		double score = commentService.getScoreAverageByMovie(movieIdString);
-		movieService.updateScore(movieIdString, score);
+		double score = movieService.getScoreAverageByMovie(movieId);
+		movieService.updateScore(movieId, score);
 
 		return ResponseEntity.ok(comment);
 

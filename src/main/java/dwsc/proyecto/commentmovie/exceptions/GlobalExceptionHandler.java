@@ -18,21 +18,4 @@ public class GlobalExceptionHandler {
 		resp.setError(ex.getMessage());
 		return new ResponseEntity<>(resp, HttpStatus.NOT_FOUND);
 	}
-	
-	@ExceptionHandler(CommentNotFoundException.class)
-	public ResponseEntity<CustomResponse> commentNotFound(RuntimeException ex) {
-		CustomResponse resp = new CustomResponse();
-		resp.setTimestamp(LocalDateTime.now());
-		resp.setError(ex.getMessage());
-		return new ResponseEntity<>(resp, HttpStatus.NOT_FOUND);
-	}
-	
-	@ExceptionHandler(CommentDuplicatedException.class)
-	public ResponseEntity<CustomResponse> commentDuplicated(RuntimeException ex) {
-		CustomResponse resp = new CustomResponse();
-		resp.setTimestamp(LocalDateTime.now());
-		resp.setError(ex.getMessage());
-		return new ResponseEntity<>(resp, HttpStatus.NOT_FOUND);
-	}
-
 }

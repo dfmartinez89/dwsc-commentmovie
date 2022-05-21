@@ -14,26 +14,9 @@ public class CommentServiceImpl implements CommentService {
 	public Iterable<Comment> getAllByMovieId(String movieId) {
 		return commentRepo.findAllByMovieId(movieId);
 	}
-	
-	public void saveComment (Comment comment) {
+
+	public void saveComment(Comment comment) {
 		commentRepo.save(comment);
-	}
-
-	public double getScoreAverageByMovie(String movieId) {
-		Iterable<Comment> comments = commentRepo.findAllByMovieId(movieId);
-		int elem = 0;
-		double totalScore = 0;
-		for (Comment comment : comments) {
-			elem++;
-			totalScore = totalScore + comment.getScore();
-		}
-
-		if (elem != 0) {
-			return totalScore / elem;
-		} else {
-			return 0;
-		}
-
 	}
 
 }
