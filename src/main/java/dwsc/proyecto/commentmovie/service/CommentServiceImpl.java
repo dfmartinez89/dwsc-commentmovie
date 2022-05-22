@@ -11,10 +11,12 @@ public class CommentServiceImpl implements CommentService {
 	@Autowired
 	CommentRepository commentRepo;
 
+	@Override
 	public Iterable<Comment> getAllByMovieId(String movieId) {
 		return commentRepo.findAllByMovieId(movieId);
 	}
 
+	@Override
 	public void saveComment(Comment comment) {
 		commentRepo.save(comment);
 	}

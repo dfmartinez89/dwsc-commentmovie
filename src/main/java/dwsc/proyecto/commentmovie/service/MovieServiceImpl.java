@@ -18,10 +18,12 @@ public class MovieServiceImpl implements MovieService {
 	@Autowired
 	CommentRepository commentRepo;
 
+	@Override
 	public Optional<Movie> findMovieById(String movieId) {
 		return movieRepo.findById(movieId);
 	}
 
+	@Override
 	public double getScoreAverageByMovie(String movieId) {
 		Iterable<Comment> comments = commentRepo.findAllByMovieId(movieId);
 		int elem = 0;
@@ -39,6 +41,7 @@ public class MovieServiceImpl implements MovieService {
 
 	}
 
+	@Override
 	public void updateScore(String id, double score) {
 		Optional<Movie> movieOptional = movieRepo.findById(id);
 
