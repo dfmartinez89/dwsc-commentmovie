@@ -46,7 +46,7 @@ public class MovieServiceImpl implements MovieService {
 		Optional<Movie> movieOptional = movieRepo.findById(id);
 
 		Movie movie = movieOptional.get();
-		movie.setAverageScore(score);
+		movie.setScore(score);
 
 		movieRepo.save(movie);
 
