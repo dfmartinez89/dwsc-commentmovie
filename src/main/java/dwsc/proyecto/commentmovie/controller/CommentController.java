@@ -44,7 +44,8 @@ public class CommentController {
 			@Parameter(description = "Movie id") @PathVariable String movieId) throws MovieNotFoundException {
 		Optional<Movie> movie = movieService.findMovieById(movieId);
 		if (!movie.isPresent()) {
-			throw new MovieNotFoundException(HttpStatus.NOT_FOUND, "The movie with id: " + movieId + " does not exists");
+			throw new MovieNotFoundException(HttpStatus.NOT_FOUND,
+					"The movie with id: " + movieId + " does not exists");
 		}
 
 		return ResponseEntity.ok(commentService.getAllByMovieId(movieId));
@@ -53,13 +54,14 @@ public class CommentController {
 	@Operation(summary = "insert a new comment related to a given movie", description = "Operation to create a comment")
 	@ApiResponses({ @ApiResponse(responseCode = "201", description = "comment created succesfully"),
 			@ApiResponse(responseCode = "404", description = "movie not found", content = @Content(schema = @Schema(implementation = CustomResponse.class))) })
-	@RequestMapping(method = RequestMethod.POST, path = "/comment/{movieId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method = RequestMethod.POST, path = "/comment/{movieId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Comment> saveComment(@Parameter(description = "Movie id") @PathVariable String movieId,
 			@Parameter(description = "Comment details") @RequestBody Comment comment) throws MovieNotFoundException {
 		Optional<Movie> movie = movieService.findMovieById(movieId);
 
 		if (!movie.isPresent()) {
-			throw new MovieNotFoundException(HttpStatus.NOT_FOUND, "The movie with id: " + movieId + " does not exists");
+			throw new MovieNotFoundException(HttpStatus.NOT_FOUND,
+					"The movie with id: " + movieId + " does not exists");
 		}
 
 		comment.setMovie(movie.get());
