@@ -41,7 +41,7 @@ public class CommentController {
 			@ApiResponse(responseCode = "404", description = "comment not found", content = @Content(schema = @Schema(implementation = CustomResponse.class))) })
 	@RequestMapping(method = RequestMethod.GET, path = "/comment/{movieId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Iterable<Comment>> getAllCommentsByMovieId(
-			@Parameter(description = "Movie id") @PathVariable String movieId) throws MovieNotFoundException {
+			@Parameter(description = "Movie id") @PathVariable(required = true) String movieId) throws MovieNotFoundException {
 		Optional<Movie> movie = movieService.findMovieById(movieId);
 		if (!movie.isPresent()) {
 			throw new MovieNotFoundException(HttpStatus.NOT_FOUND,
@@ -55,8 +55,9 @@ public class CommentController {
 	@ApiResponses({ @ApiResponse(responseCode = "201", description = "comment created succesfully"),
 			@ApiResponse(responseCode = "404", description = "movie not found", content = @Content(schema = @Schema(implementation = CustomResponse.class))) })
 	@RequestMapping(method = RequestMethod.POST, path = "/comment/{movieId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Comment> saveComment(@Parameter(description = "Movie id") @PathVariable String movieId,
-			@Parameter(description = "Comment details") @RequestBody Comment comment) throws MovieNotFoundException {
+	public ResponseEntity<Comment> saveComment(@Parameter(description = "Movie id") @PathVariable(required = true) String movieId,
+			@Parameter(description = "Comment details") @RequestBody(required = true) Comment comment)
+			throws MovieNotFoundException {
 		Optional<Movie> movie = movieService.findMovieById(movieId);
 
 		if (!movie.isPresent()) {

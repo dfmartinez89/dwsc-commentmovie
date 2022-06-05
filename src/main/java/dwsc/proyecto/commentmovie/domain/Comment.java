@@ -23,6 +23,7 @@ public class Comment {
 	private Date createdAt;
 	@DBRef // tune workaround https://spring.io/blog/2021/11/29/spring-data-mongodb-relation-modelling
 	private Movie movie;
+	
 	public String getId() {
 		return id;
 	}
