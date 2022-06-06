@@ -1,5 +1,11 @@
 package dwsc.proyecto.commentmovie.controller;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import dwsc.proyecto.commentmovie.domain.Comment;
 import dwsc.proyecto.commentmovie.domain.Movie;
 import dwsc.proyecto.commentmovie.exceptions.CustomResponse;
+import dwsc.proyecto.commentmovie.exceptions.InvalidCommentException;
 import dwsc.proyecto.commentmovie.exceptions.MovieNotFoundException;
 import dwsc.proyecto.commentmovie.service.CommentService;
 import dwsc.proyecto.commentmovie.service.MovieService;
@@ -41,7 +48,8 @@ public class CommentController {
 			@ApiResponse(responseCode = "404", description = "comment not found", content = @Content(schema = @Schema(implementation = CustomResponse.class))) })
 	@RequestMapping(method = RequestMethod.GET, path = "/comment/{movieId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Iterable<Comment>> getAllCommentsByMovieId(
-			@Parameter(description = "Movie id") @PathVariable(required = true) String movieId) throws MovieNotFoundException {
+			@Parameter(description = "Movie id") @PathVariable(required = true) String movieId)
+			throws MovieNotFoundException {
 		Optional<Movie> movie = movieService.findMovieById(movieId);
 		if (!movie.isPresent()) {
 			throw new MovieNotFoundException(HttpStatus.NOT_FOUND,
@@ -55,7 +63,8 @@ public class CommentController {
 	@ApiResponses({ @ApiResponse(responseCode = "201", description = "comment created succesfully"),
 			@ApiResponse(responseCode = "404", description = "movie not found", content = @Content(schema = @Schema(implementation = CustomResponse.class))) })
 	@RequestMapping(method = RequestMethod.POST, path = "/comment/{movieId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Comment> saveComment(@Parameter(description = "Movie id") @PathVariable(required = true) String movieId,
+	public ResponseEntity<Comment> saveComment(
+			@Parameter(description = "Movie id") @PathVariable(required = true) String movieId,
 			@Parameter(description = "Comment details") @RequestBody(required = true) Comment comment)
 			throws MovieNotFoundException {
 		Optional<Movie> movie = movieService.findMovieById(movieId);
@@ -64,6 +73,19 @@ public class CommentController {
 			throw new MovieNotFoundException(HttpStatus.NOT_FOUND,
 					"The movie with id: " + movieId + " does not exists");
 		}
+
+		if (comment.getAuthor().isBlank() || comment.getText().isBlank()) {
+			throw new InvalidCommentException(HttpStatus.BAD_REQUEST, "Please add all fields");
+		}
+
+		Calendar calendar = Calendar.getInstance();
+		Date date = calendar.getTime();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		Instant instant = date.toInstant();
+		LocalDateTime ldt = instant.atZone(ZoneId.of("CET")).toLocalDateTime();
+		String formattedDate = ldt.format(formatter);
+
+		comment.setCreatedAt(formattedDate);
 
 		comment.setMovie(movie.get());
 
